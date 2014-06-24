@@ -45,7 +45,7 @@ type mongoCall func(*mgo.Collection) error
 // RunAction sets up and executes the specified action.
 func RunAction(actionName string, user string) error {
 	// We need this object to establish a session to our MongoDB.
-	mongoDBDialInfo := &mgo.DialInfo{
+	mongoDBDialInfo := mgo.DialInfo{
 		Addrs:    []string{MongoDBHosts},
 		Timeout:  60 * time.Second,
 		Database: AuthDatabase,
@@ -55,7 +55,7 @@ func RunAction(actionName string, user string) error {
 
 	// Create a session which maintains a pool of socket connections
 	// to our MongoDB.
-	session, err := mgo.DialWithInfo(mongoDBDialInfo)
+	session, err := mgo.DialWithInfo(&mongoDBDialInfo)
 	if err != nil {
 		log.Println("CreateSession:", err)
 		return err
