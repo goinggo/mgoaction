@@ -21,6 +21,6 @@ import (
 )
 
 func main() {
-	// Run the specified action for the specified userid.
-	engine.RunAction("advice", "396bc782-6ac6-4183-a671-6e75ca5989a5")
+	// Run the specified rule for the specified userid.
+	engine.RunRule("advice", "396bc782-6ac6-4183-a671-6e75ca5989a5")
 }

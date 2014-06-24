@@ -31,9 +31,9 @@ type (
 		Expressions []string `json:"expressions"`
 	}
 
-	// actionScript contains a single rule with an action.
-	actionScript struct {
-		Rule    operation `json:"rule"`
+	// rule contains a single rule with an action.
+	rule struct {
+		Test    operation `json:"test"`
 		Success operation `json:"success"`
 		Failed  operation `json:"failed"`
 	}
@@ -42,8 +42,8 @@ type (
 // mongoCall provides mongodb execution support.
 type mongoCall func(*mgo.Collection) error
 
-// RunAction sets up and executes the specified action.
-func RunAction(actionName string, user string) error {
+// RunRule sets up and executes the specified rule.
+func RunRule(ruleName string, user string) error {
 	// We need this object to establish a session to our MongoDB.
 	mongoDBDialInfo := mgo.DialInfo{
 		Addrs:    []string{MongoDBHosts},
@@ -71,28 +71,28 @@ func RunAction(actionName string, user string) error {
 	// http://godoc.org/labix.org/v2/mgo#Session.SetMode
 	session.SetMode(mgo.Monotonic, true)
 
-	// Run the specified action
-	return runAction(session, user, actionName)
+	// Run the specified rule
+	return runRule(session, user, ruleName)
 }
 
-// FindAdvice runs a set of data aggregations through the MongoDB pipeline and displays to the terminal
-// the advice for the user.
-func runAction(session *mgo.Session, user string, actionName string) error {
+// runRule runs a set of expressions through the MongoDB aggregation pipeline and
+// displays to the terminal the result for the user.
+func runRule(session *mgo.Session, user string, ruleName string) error {
 	// Retrieve the actions to run.
-	action, err := retrieveAction(actionName)
+	r, err := retrieveRule(ruleName)
 	if err != nil {
 		log.Println(err)
 		return err
 	}
 
-	// Process the action.
-	return processAction(session, action, user)
+	// Process the rule.
+	return processRule(session, r, user)
 }
 
 // retrieveAction reads and unmarshals the specified action data file.
-func retrieveAction(actionName string) (*actionScript, error) {
+func retrieveRule(ruleName string) (*rule, error) {
 	// Open the file.
-	file, err := os.Open("actions/" + actionName + ".json")
+	file, err := os.Open("rules/" + ruleName + ".json")
 	if err != nil {
 		return nil, err
 	}
@@ -100,28 +100,28 @@ func retrieveAction(actionName string) (*actionScript, error) {
 	// Schedule the file to be closed once the function returns.
 	defer file.Close()
 
-	// Decode the file into a value of the actionScript type.
-	var action actionScript
-	err = json.NewDecoder(file).Decode(&action)
+	// Decode the file into a value of the rule type.
+	var r rule
+	err = json.NewDecoder(file).Decode(&r)
 
 	// We don't need to check for errors, the caller can do this.
-	return &action, err
+	return &r, err
 }
 
-// processAction execute the queries against the aggregation pipeline.
-func processAction(session *mgo.Session, action *actionScript, user string) error {
+// processRule execute the expressions against the aggregation pipeline.
+func processRule(session *mgo.Session, r *rule, user string) error {
 	// Process the rule and check for results
-	results, err := executeOperations(session, action.Rule, user)
+	results, err := executeOperations(session, r.Test, user)
 	if err != nil {
 		return err
 	}
 
 	if len(results) == 0 {
 		// If no result is returned, provide the failed result
-		results, err = executeOperations(session, action.Failed, user)
+		results, err = executeOperations(session, r.Failed, user)
 	} else {
 		// Provide the success result
-		results, err = executeOperations(session, action.Success, user)
+		results, err = executeOperations(session, r.Success, user)
 	}
 
 	if err != nil {

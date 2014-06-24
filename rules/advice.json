@@ -1,5 +1,5 @@
 {
-    "rule" : {
+    "test" : {
         "collection" : "demo_user_transactions",
         "expressions" : [ 
             "{ \"$match\" : { \"user_id\" : \"#userId#\", \"category\" : \"gas\" }}", 
