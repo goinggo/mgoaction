@@ -130,6 +130,7 @@ func processRule(session *mgo.Session, r *rule, user string) error {
 		return err
 	}
 
+	log.Println(results)
 	return nil
 }
 
@@ -151,14 +152,13 @@ func executeOperations(session *mgo.Session, op operation, user string) ([]bson.
 	}
 
 	// Execute the aggregation pipeline expressions.
-	var result []bson.M
+	var results []bson.M
 	err = mongoDB(session, op.Collection,
 		func(collection *mgo.Collection) error {
-			return collection.Pipe(operations).All(&result)
+			return collection.Pipe(operations).All(&results)
 		})
 
-	log.Println(result)
-	return result, err
+	return results, err
 }
 
 // unmarshalOperation converts a JSON string into a BSON map.
