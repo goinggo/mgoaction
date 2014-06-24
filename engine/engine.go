@@ -113,6 +113,7 @@ func processRule(session *mgo.Session, r *rule, user string) error {
 	// Process the rule and check for results
 	results, err := executeOperations(session, r.Test, user)
 	if err != nil {
+		log.Println("Unable To Process Action", err)
 		return err
 	}
 
