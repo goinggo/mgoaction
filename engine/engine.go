@@ -108,7 +108,7 @@ func retrieveRule(ruleName string) (*rule, error) {
 	return &r, err
 }
 
-// processRule processes the rule and determines displays the results.
+// processRule processes the rule and displays the results.
 func processRule(session *mgo.Session, r *rule, user string) error {
 	// Process the rule and check for results
 	results, err := executeOperation(session, r.Test, user)
