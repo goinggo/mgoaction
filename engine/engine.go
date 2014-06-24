@@ -151,12 +151,14 @@ func executeOperation(session *mgo.Session, op operation, user string) ([]bson.M
 		operations[index] = unmarshalOperation(exp)
 	}
 
+	collection := session.DB(TestDatabase).C(op.Collection)
+	if collection == nil {
+		return nil, fmt.Errorf("Collection %s does not exist", op.Collection)
+	}
+
 	// Execute the aggregation pipeline expressions.
 	var results []bson.M
-	err = mongoDB(session, op.Collection,
-		func(collection *mgo.Collection) error {
-			return collection.Pipe(operations).All(&results)
-		})
+	err = collection.Pipe(operations).All(&results)
 
 	return results, err
 }
@@ -170,21 +172,4 @@ func unmarshalOperation(expression string) bson.M {
 	operation := make(bson.M)
 	json.Unmarshal(op, &operation)
 	return operation
-}
-
-// mongoDB the MongoDB literal function.
-func mongoDB(mongoSession *mgo.Session, collectionName string, mc mongoCall) error {
-	// Capture the specified collection.
-	collection := mongoSession.DB(TestDatabase).C(collectionName)
-	if collection == nil {
-		return fmt.Errorf("Collection %s does not exist", collectionName)
-	}
-
-	// Execute the mongo call.
-	err := mc(collection)
-	if err != nil {
-		return err
-	}
-
-	return nil
 }
