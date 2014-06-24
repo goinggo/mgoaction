@@ -116,10 +116,11 @@ func processAction(session *mgo.Session, action *actionScript, user string) erro
 		return err
 	}
 
-	// If no result is returned, provide the failed result
 	if len(results) == 0 {
+		// If no result is returned, provide the failed result
 		results, err = executeOperations(session, &action.Failed, user)
 	} else {
+		// Provide the success result
 		results, err = executeOperations(session, &action.Success, user)
 	}
 
