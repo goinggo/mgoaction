@@ -1,0 +1,22 @@
+{
+    "rule" : {
+        "collection" : "demo_user_transactions",
+        "expressions" : [ 
+            "{ \"$match\" : { \"user_id\" : \"#userId#\", \"category\" : \"gas\" }}", 
+            "{ \"$group\" : { \"_id\" : { \"category\" : \"$category\" }, \"amount\" : { \"$sum\" : \"$amount\" }}}", 
+            "{ \"$match\" : { \"amount\" : { \"$gt\" : 20.00}}}"
+        ]
+    },
+    "success" : {
+        "collection" : "demo_advice",
+        "expressions" : [ 
+            "{ \"$match\" : { \"advice_id\" : 1 }}"
+        ]
+    },
+    "failed" : {
+        "collection" : "demo_advice",
+        "expressions" : [ 
+            "{ \"$match\" : { \"advice_id\" : 2 }}"
+        ]
+    }
+}
