@@ -108,7 +108,7 @@ func retrieveRule(ruleName string) (*rule, error) {
 	return &r, err
 }
 
-// processRule execute the expressions against the aggregation pipeline.
+// processRule processes the rule and determines displays the results.
 func processRule(session *mgo.Session, r *rule, user string) error {
 	// Process the rule and check for results
 	results, err := executeOperation(session, r.Test, user)
@@ -135,10 +135,10 @@ func processRule(session *mgo.Session, r *rule, user string) error {
 }
 
 // executeOperation builds an aggregation pipeline query based on the
-// specififed expressions.
+// configured expressions for the operation.
 func executeOperation(session *mgo.Session, op operation, user string) ([]bson.M, error) {
 	var err error
-	operations := make([]bson.M, len(op.Expressions))
+	expressions := make([]bson.M, len(op.Expressions))
 
 	// Iterate through the set of expressions and build the slice
 	// of operations.
@@ -148,17 +148,18 @@ func executeOperation(session *mgo.Session, op operation, user string) ([]bson.M
 		}
 
 		log.Println(exp)
-		operations[index] = unmarshalOperation(exp)
+		expressions[index] = unmarshalOperation(exp)
 	}
 
+	// Capture a collection so we can execute the expressions.
 	collection := session.DB(TestDatabase).C(op.Collection)
 	if collection == nil {
 		return nil, fmt.Errorf("Collection %s does not exist", op.Collection)
 	}
 
-	// Execute the aggregation pipeline expressions.
+	// Execute the expressions against the aggregation pipeline.
 	var results []bson.M
-	err = collection.Pipe(operations).All(&results)
+	err = collection.Pipe(expressions).All(&results)
 
 	return results, err
 }
