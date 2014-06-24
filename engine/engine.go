@@ -120,11 +120,11 @@ func processRule(session *mgo.Session, r *rule, user string) error {
 	if len(results) == 0 {
 		// If no result is returned, provide the failed result
 		log.Println("Failed:")
-		results, err = executeOperation(session, r.Failed, user)
+		_, err = executeOperation(session, r.Failed, user)
 	} else {
 		// Provide the success result
 		log.Println("Succeeded:")
-		results, err = executeOperation(session, r.Success, user)
+		_, err = executeOperation(session, r.Success, user)
 	}
 
 	if err != nil {
