@@ -89,7 +89,7 @@ func runRule(session *mgo.Session, user string, ruleName string) error {
 	return processRule(session, r, user)
 }
 
-// retrieveAction reads and unmarshals the specified action data file.
+// retrieveRule reads and unmarshals the specified rule data file.
 func retrieveRule(ruleName string) (*rule, error) {
 	// Open the file.
 	file, err := os.Open("rules/" + ruleName + ".json")
