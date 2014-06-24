@@ -111,17 +111,17 @@ func retrieveAction(actionName string) (*actionScript, error) {
 // processAction execute the queries against the aggregation pipeline.
 func processAction(session *mgo.Session, action *actionScript, user string) error {
 	// Process the rule and check for results
-	results, err := executeOperations(session, &action.Rule, user)
+	results, err := executeOperations(session, action.Rule, user)
 	if err != nil {
 		return err
 	}
 
 	if len(results) == 0 {
 		// If no result is returned, provide the failed result
-		results, err = executeOperations(session, &action.Failed, user)
+		results, err = executeOperations(session, action.Failed, user)
 	} else {
 		// Provide the success result
-		results, err = executeOperations(session, &action.Success, user)
+		results, err = executeOperations(session, action.Success, user)
 	}
 
 	if err != nil {
@@ -134,7 +134,7 @@ func processAction(session *mgo.Session, action *actionScript, user string) erro
 
 // executeOperations builds an aggregation pipeline query based on the
 // specififed expressions.
-func executeOperations(session *mgo.Session, op *operation, user string) ([]bson.M, error) {
+func executeOperations(session *mgo.Session, op operation, user string) ([]bson.M, error) {
 	var err error
 	operations := make([]bson.M, len(op.Expressions))
 
