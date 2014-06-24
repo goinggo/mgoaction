@@ -130,7 +130,10 @@ func processRule(session *mgo.Session, r *rule, user string) error {
 		return err
 	}
 
-	log.Println(results)
+	// Pretty print the result.
+	output, _ := json.MarshalIndent(results, "", "    ")
+
+	log.Println(string(output))
 	return nil
 }
 
