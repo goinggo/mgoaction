@@ -111,7 +111,7 @@ func retrieveRule(ruleName string) (*rule, error) {
 // processRule execute the expressions against the aggregation pipeline.
 func processRule(session *mgo.Session, r *rule, user string) error {
 	// Process the rule and check for results
-	results, err := executeOperations(session, r.Test, user)
+	results, err := executeOperation(session, r.Test, user)
 	if err != nil {
 		log.Println("Unable To Process Action", err)
 		return err
@@ -119,10 +119,10 @@ func processRule(session *mgo.Session, r *rule, user string) error {
 
 	if len(results) == 0 {
 		// If no result is returned, provide the failed result
-		results, err = executeOperations(session, r.Failed, user)
+		results, err = executeOperation(session, r.Failed, user)
 	} else {
 		// Provide the success result
-		results, err = executeOperations(session, r.Success, user)
+		results, err = executeOperation(session, r.Success, user)
 	}
 
 	if err != nil {
@@ -134,9 +134,9 @@ func processRule(session *mgo.Session, r *rule, user string) error {
 	return nil
 }
 
-// executeOperations builds an aggregation pipeline query based on the
+// executeOperation builds an aggregation pipeline query based on the
 // specififed expressions.
-func executeOperations(session *mgo.Session, op operation, user string) ([]bson.M, error) {
+func executeOperation(session *mgo.Session, op operation, user string) ([]bson.M, error) {
 	var err error
 	operations := make([]bson.M, len(op.Expressions))
 
