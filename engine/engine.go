@@ -119,9 +119,11 @@ func processRule(session *mgo.Session, r *rule, user string) error {
 
 	if len(results) == 0 {
 		// If no result is returned, provide the failed result
+		log.Println("Failed:")
 		results, err = executeOperation(session, r.Failed, user)
 	} else {
 		// Provide the success result
+		log.Println("Succeeded:")
 		results, err = executeOperation(session, r.Success, user)
 	}
 
@@ -130,10 +132,6 @@ func processRule(session *mgo.Session, r *rule, user string) error {
 		return err
 	}
 
-	// Pretty print the result.
-	output, _ := json.MarshalIndent(results, "", "    ")
-
-	log.Println(string(output))
 	return nil
 }
 
@@ -163,6 +161,10 @@ func executeOperation(session *mgo.Session, op operation, user string) ([]bson.M
 	// Execute the expressions against the aggregation pipeline.
 	var results []bson.M
 	err = collection.Pipe(expressions).All(&results)
+
+	// Pretty print the result.
+	output, _ := json.MarshalIndent(results, "", "    ")
+	log.Println(string(output))
 
 	return results, err
 }
