@@ -129,10 +129,9 @@ func processRule(session *mgo.Session, r *rule, user string) error {
 
 	if err != nil {
 		log.Println("Unable To Process Action", err)
-		return err
 	}
 
-	return nil
+	return err
 }
 
 // executeOperation builds an aggregation pipeline query based on the
