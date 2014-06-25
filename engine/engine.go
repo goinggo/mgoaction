@@ -111,6 +111,7 @@ func retrieveRule(ruleName string) (*rule, error) {
 // processRule processes the rule and displays the results.
 func processRule(session *mgo.Session, r *rule, user string) error {
 	// Process the rule and check for results
+	log.Println("Test:")
 	results, err := executeOperation(session, r.Test, user)
 	if err != nil {
 		log.Println("Unable To Process Action", err)
@@ -123,7 +124,7 @@ func processRule(session *mgo.Session, r *rule, user string) error {
 		_, err = executeOperation(session, r.Failed, user)
 	} else {
 		// Provide the success result
-		log.Println("Succeeded:")
+		log.Println("Success:")
 		_, err = executeOperation(session, r.Success, user)
 	}
 
