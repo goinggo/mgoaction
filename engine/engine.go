@@ -149,7 +149,7 @@ func executeOperation(session *mgo.Session, op operation, user string) ([]bson.M
 		}
 
 		log.Println(exp)
-		expressions[index] = unmarshalOperation(exp)
+		expressions[index] = decodeExpression(exp)
 	}
 
 	// Capture a collection so we can execute the expressions.
@@ -169,8 +169,8 @@ func executeOperation(session *mgo.Session, op operation, user string) ([]bson.M
 	return results, err
 }
 
-// unmarshalOperation converts a JSON string into a BSON map.
-func unmarshalOperation(expression string) bson.M {
+// decodeExpression converts a JSON string into a BSON map.
+func decodeExpression(expression string) bson.M {
 	// Convert the expression to a byte slice.
 	op := []byte(expression)
 
