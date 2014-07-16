@@ -3,16 +3,16 @@
 // license that can be found in the LICENSE file.
 
 /*
-	The program shows how to use MongoDB and Go to make the collections of data you have today
-	actionable in a dynamic way.
+The program shows how to use MongoDB and Go to make the collections of data you have today
+actionable in a dynamic way.
 
-	Ardan Studios
-	12973 SW 112 ST, Suite 153
-	Miami, FL 33186
-	bill@ardanstudios.com
+Ardan Studios
+12973 SW 112 ST, Suite 153
+Miami, FL 33186
+bill@ardanstudios.com
 
-	GoingGo.net Post:
-	http://www.goinggo.net/2013/07/actionable-data-monogdb-go.html
+GoingGo.net Post:
+http://www.goinggo.net/2013/07/actionable-data-monogdb-go.html
 */
 package main
 
