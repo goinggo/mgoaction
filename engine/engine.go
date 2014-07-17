@@ -177,7 +177,7 @@ func decodeExpression(expression string) bson.M {
 	op := []byte(expression)
 
 	// Unmarshal the expression to a bson map.
-	operation := make(bson.M)
+	var operation bson.M
 	json.Unmarshal(op, &operation)
 	return operation
 }
